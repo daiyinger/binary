@@ -43,8 +43,10 @@ iptables -t nat -X
 iptables -I INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 iptables -I FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
 
-#针对输出包(即从linux侧发往大网的报文)，如果源IP是10.10.10.0/24网段，则使用NAT表转发到eth0接口外发.
+#针对输出包(即从linux侧发往大网的报文)，如果源IP是VNET0_IP_LINUX/24网段，则使用NAT表转发到eth0接口外发.
 iptables -t nat -A POSTROUTING -s $VNET0_IP_LINUX/24 -j SNAT --to $OUT_IP
 
-#针对输入包(即从大网发送到android侧的报文),如果目的IP是192.168.100.242网口，则使用NAT同时转发到linux侧.
-iptables -t nat -A PREROUTING -d $OUT_IP -j DNAT --to $VNET0_IP_LINUX
+#针对输入包(即从大网发送到android侧的报文),如果目的IP是OUT_IP网口，则使用NAT同时转发到linux侧.
+#iptables -t nat -A PREROUTING -d $OUT_IP -j DNAT --to $VNET0_IP_LINUX
+iptables -t nat -A PREROUTING -d $OUT_IP -p tcp --dport 9999 -j DNAT --to-destination $VNET0_IP_LINUX:23
+iptables -t nat -A PREROUTING -d $OUT_IP -p tcp --dport 10000 -j DNAT --to-destination $VNET0_IP_LINUX:21
