@@ -1,11 +1,11 @@
 #!/sbin/busybox sh
 echo "config net..."
 
-cp /system/binary/root/* /root/
+#cp /system/binary/root/* /root/
 
 insmod /system/binary/rtloader.ko
 
-sleep 5
+sleep 3
 
 insmod /system/binary/vbus.ko
 
